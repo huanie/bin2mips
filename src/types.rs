@@ -27,7 +27,7 @@ impl Display for I_Format {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "{} {}, {}, {}\n{:05b} is {}\n{:05b} is {}",
+            "(I-Format) {} {}, {}, {}\nrt: {:05b} is {}\nrs: {:05b} is {}",
             self.find_operation(),
             self.rt_register,
             self.rs_register,
@@ -69,7 +69,7 @@ impl Display for R_Format {
         if self.shift_amount != 0 {
             write!(
                 f,
-                "{} {}, {}, {}\n{} is {}\n{} is {}",
+                "(R-Format) {} {}, {}, {}\nrt: {} is {}\nrd: {} is {}",
                 self.find_operation(),
                 self.rd_register,
                 self.rt_register,
@@ -82,7 +82,7 @@ impl Display for R_Format {
         } else {
             write!(
                 f,
-                "{} {}, {}, {}\n{:05b} is {}\n{:05b} is {}\n{:05b} is {}",
+                "(R-Format) {} {}, {}, {}\nrs: {:05b} is {}\nrt: {:05b} is {}\nrd: {:05b} is {}",
                 self.find_operation(),
                 self.rd_register,
                 self.rs_register,
@@ -121,7 +121,7 @@ impl Display for J_Format {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{} {}\nJump to address {}",
+            "(J-Format) {} {}\nJump to address {}",
             self.find_operation(),
             self.address,
             self.address * 4
