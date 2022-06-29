@@ -1,0 +1,18 @@
+* Usage
+#+begin_src shell
+  cargo run "0000 0000 1001 0000 0001 0000 0010 0111"
+#+end_src
+
+or
+
+#+begin_src shell
+  cargo run 0000 0000 1001 0000 0001 0000 0010 0111
+#+end_src
+
+Just type the sequence, they don't need to be separated with spaces but it's nicer to read.
+
+* CSV files
+If the op_code, func_code or register numbers change you can change it in the files. You only need to fill the *BINARY*, *REGISTER*, *BINARY* and *COMMAND* columns. The other ones exist because I used a spreadsheet program to write them.
+
+* Use at your own risk
+lalalalallala
