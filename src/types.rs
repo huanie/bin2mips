@@ -149,15 +149,15 @@ impl Display for Register {
     }
 }
 
-pub struct MappedCSV<'a> {
-    pub filename: &'a str,
-    pub check_column: &'a str,
+pub struct MappedCSV {
+    pub filename: &'static str,
+    pub check_column: &'static str,
     pub query: String,
-    pub want_column: &'a str,
+    pub want_column: &'static str,
 }
 
-impl MappedCSV<'_> {
-    fn register_search(query: u32) -> MappedCSV<'static> {
+impl MappedCSV {
+    fn register_search(query: u32) -> MappedCSV {
         MappedCSV {
             filename: "registers.csv",
             check_column: "BINARY",
@@ -166,7 +166,7 @@ impl MappedCSV<'_> {
         }
     }
 
-    fn command_search(check_column: &str, query: u32) -> MappedCSV {
+    fn command_search(check_column: &'static str, query: u32) -> MappedCSV {
         MappedCSV {
             filename: "commands.csv",
             check_column,
