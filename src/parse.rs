@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use crate::types::{I_Format, J_Format, R_Format};
+use crate::types::{I_Format, J_Format, MappedCSV, R_Format};
 
 #[allow(non_camel_case_types)]
 #[allow(clippy::enum_variant_names)]
@@ -17,10 +17,22 @@ impl Format {
         if (bin >> 26) > 63 {
             panic!("This is not an opcode");
         }
-        match bin >> 26 {
-            0b000000 => Format::R_Format(bin),
-            0b000010 | 0b000011 => Format::J_Format(bin),
-            _ => Format::I_Format(bin),
+
+        if let 0b000000 = bin >> 26 {
+            Format::R_Format(bin)
+        } else {
+            match MappedCSV::get_mapped_value(MappedCSV {
+                filename: "commands.csv",
+                check_column: "OP_BINARY",
+                query: format!("{:06b}", bin >> 26),
+                want_column: "FORMAT",
+            })
+            .as_str()
+            {
+                "I-Format" => Format::I_Format(bin),
+                "J-Format" => Format::J_Format(bin),
+                _ => panic!("Error at parsing!"),
+            }
         }
     }
 }

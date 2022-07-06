@@ -19,13 +19,13 @@ impl I_Format {
     }
 
     fn find_operation(&self) -> String {
-        csv_get_mapped_value(MappedCSV::command_search("OP_BINARY", self.opcode))
+        MappedCSV::get_mapped_value(MappedCSV::command_search("OP_BINARY", self.opcode))
     }
 }
 
 impl Display for I_Format {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
+        write!(
             f,
             "(I-Format) {} {}, {}, {}\nrt: {:05b} is {}\nrs: {:05b} is {}",
             self.find_operation(),
@@ -60,7 +60,7 @@ impl R_Format {
         }
     }
     fn find_operation(&self) -> String {
-        csv_get_mapped_value(MappedCSV::command_search("FUNC_BINARY", self.function_code))
+        MappedCSV::get_mapped_value(MappedCSV::command_search("FUNC_BINARY", self.function_code))
     }
 }
 
@@ -113,7 +113,7 @@ impl J_Format {
     }
 
     fn find_operation(&self) -> String {
-        csv_get_mapped_value(MappedCSV::command_search("OP_BINARY", self.opcode))
+        MappedCSV::get_mapped_value(MappedCSV::command_search("OP_BINARY", self.opcode))
     }
 }
 
@@ -139,7 +139,7 @@ impl Register {
     }
 
     fn register_name(&self) -> String {
-        csv_get_mapped_value(MappedCSV::register_search(self.code))
+        MappedCSV::get_mapped_value(MappedCSV::register_search(self.code))
     }
 }
 
@@ -149,11 +149,11 @@ impl Display for Register {
     }
 }
 
-struct MappedCSV<'a> {
-    filename: &'a str,
-    check_column: &'a str,
-    query: String,
-    want_column: &'a str,
+pub struct MappedCSV<'a> {
+    pub filename: &'a str,
+    pub check_column: &'a str,
+    pub query: String,
+    pub want_column: &'a str,
 }
 
 impl MappedCSV<'_> {
@@ -166,7 +166,7 @@ impl MappedCSV<'_> {
         }
     }
 
-    fn command_search<'a>(check_column: &'a str, query: u32) -> MappedCSV<'a> {
+    fn command_search(check_column: &str, query: u32) -> MappedCSV {
         MappedCSV {
             filename: "commands.csv",
             check_column,
@@ -174,31 +174,31 @@ impl MappedCSV<'_> {
             want_column: "COMMAND",
         }
     }
-}
 
-fn csv_get_mapped_value(csv_map: MappedCSV) -> String {
-    let mut csv_reader = csv::Reader::from_path(csv_map.filename)
-        .unwrap_or_else(|_| panic!("{} is not in the directory!", csv_map.filename));
-    let header_iter = csv_reader.headers().unwrap().iter();
+    pub fn get_mapped_value(csv_map: MappedCSV) -> String {
+        let mut csv_reader = csv::Reader::from_path(csv_map.filename)
+            .unwrap_or_else(|_| panic!("{} is not in the directory!", csv_map.filename));
+        let header_iter = csv_reader.headers().unwrap().iter();
 
-    let check_position = header_iter
-        .clone()
-        .position(|x| x == csv_map.check_column)
-        .unwrap_or_else(|| panic!("{} column was not found.", csv_map.check_column));
+        let check_position = header_iter
+            .clone()
+            .position(|x| x == csv_map.check_column)
+            .unwrap_or_else(|| panic!("{} column was not found.", csv_map.check_column));
 
-    let want_position = header_iter
-        .clone()
-        .position(|x| x == csv_map.want_column)
-        .unwrap_or_else(|| panic!("{} column was not found.", csv_map.want_column));
+        let want_position = header_iter
+            .clone()
+            .position(|x| x == csv_map.want_column)
+            .unwrap_or_else(|| panic!("{} column was not found.", csv_map.want_column));
 
-    csv_reader
-        .records()
-        .find(|row| row.as_ref().unwrap().get(check_position).unwrap() == csv_map.query)
-        .unwrap_or_else(|| panic!("{} entry was not found.", csv_map.query))
-        .unwrap()
-        .get(want_position)
-        .unwrap()
-        .to_string()
+        csv_reader
+            .records()
+            .find(|row| row.as_ref().unwrap().get(check_position).unwrap() == csv_map.query)
+            .unwrap_or_else(|| panic!("{} entry was not found.", csv_map.query))
+            .unwrap()
+            .get(want_position)
+            .unwrap()
+            .to_string()
+    }
 }
 
 #[cfg(test)]
@@ -215,7 +215,7 @@ mod tests {
     #[test]
     fn find_jump_command() {
         assert_eq!(
-            "j 256\nJump to address 1024",
+            "(J-Format) j 256\nJump to address 1024",
             J_Format::new(0b0000_1000_0000_0000_0000_0001_0000_0000).to_string()
         );
     }

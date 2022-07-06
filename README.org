@@ -12,7 +12,7 @@ or
 Just type the sequence, they don't need to be separated with spaces but it's nicer to read.
 
 * CSV files
-If the op_code, func_code or register numbers change you can change it in the files. You only need to fill the *BINARY*, *REGISTER*, *BINARY* and *COMMAND* columns. The other ones exist because I used a spreadsheet program to write them.
+If the op_code, func_code or register numbers change you can change it in the files. You need to fill the *BINARY* (OP and FUNC too), *REGISTER*, *COMMAND*, *FORMAT* columns. The other ones exist because I used a spreadsheet program to write them.
 
 * Use at your own risk
 lalalalallala
